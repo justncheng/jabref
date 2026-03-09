@@ -53,7 +53,7 @@ public class JournalListMvGenerator {
 
         Path abbreviationsDirectory = Path.of("jablib", "src", "main", "abbrv.jabref.org", "journals");
         if (!Files.exists(abbreviationsDirectory)) {
-            System.out.println("Path " + abbreviationsDirectory.toAbsolutePath() + " does not exist");
+            LOGGER.info("Path " + abbreviationsDirectory.toAbsolutePath() + " does not exist");
             System.exit(0);
         }
         // Directory layout aligns to other plugins (e.g., XJF plugin (https://github.com/bjornvester/xjc-gradle-plugin))
@@ -80,12 +80,12 @@ public class JournalListMvGenerator {
             MVMap<String, Abbreviation> fullToAbbreviation = store.openMap("FullToAbbreviation");
             stream.forEach(Unchecked.consumer(path -> {
                 String fileName = path.getFileName().toString();
-                System.out.print("Checking ");
-                System.out.print(fileName);
+                LOGGER.info("Checking ");
+                LOGGER.info(fileName);
                 if (ignoredNames.contains(fileName)) {
-                    System.out.println(" ignored");
+                    LOGGER.info(" ignored");
                 } else {
-                    System.out.println("...");
+                    LOGGER.info("...");
                     Collection<Abbreviation> abbreviations = JournalAbbreviationLoader.readAbbreviationsFromCsvFile(path);
                     Map<String, Abbreviation> abbreviationMap = abbreviations
                             .stream()
@@ -94,7 +94,7 @@ public class JournalListMvGenerator {
                                     abbreviation -> abbreviation,
                                     (abbreviation1, abbreviation2) -> {
                                         if (verbose) {
-                                            System.out.println("Double entry " + abbreviation1.getName());
+                                            LOGGER.info("Double entry " + abbreviation1.getName());
                                         }
                                         return abbreviation2;
                                     }));
